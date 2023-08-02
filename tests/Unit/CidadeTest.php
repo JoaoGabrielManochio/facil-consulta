@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Cidade;
 use App\Services\Interfaces\CidadeServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,6 +25,7 @@ class CidadeTest extends TestCase
 
         $this->assertNotEmpty($response);
         $this->assertEquals($citys[0]->id, $response[0]->id);
+        $this->assertInstanceOf(Collection::class, $response);
     }
 
     /**
@@ -36,5 +38,6 @@ class CidadeTest extends TestCase
         $response = $serviceCity->listCitys();
 
         $this->assertEmpty($response);
+        $this->assertInstanceOf(Collection::class, $response);
     }
 }
