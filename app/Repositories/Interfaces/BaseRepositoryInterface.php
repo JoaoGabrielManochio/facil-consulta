@@ -4,6 +4,7 @@ namespace App\Repositories\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Interface BaseRepositoryInterface
@@ -11,14 +12,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface BaseRepositoryInterface
 {
-    // -> verificar
     public function makeModel(): Model;
-    public function paginate(?int $perPage, array $columns = ['*']): LengthAwarePaginator;
-    public function allQuery();
-    public function all();
-    public function create($input): Model;
-    public function find($id, $columns = ['*']);
-    public function update($input, $id);
-    public function delete($id);
-    public function forceDelete(int $id);
+    public function paginate(
+        int $perPage,
+        array $columns = ['*']
+    ): LengthAwarePaginator;
+    public function allQuery(
+        array $search = [],
+        ?int $skip = null,
+        ?int $limit = null
+    ): Builder;
+    public function all(
+        array $search = [],
+        ?int $skip = null,
+        ?int $limit = null,
+        array $columns = ['*']
+    );
+    public function create(array $input): Model;
+    public function find(int $id, array $columns = ['*']);
+    public function update(array $input, int $id);
+    public function delete(int $id): ?bool;
+    public function forceDelete(int $id): ?bool;
 }

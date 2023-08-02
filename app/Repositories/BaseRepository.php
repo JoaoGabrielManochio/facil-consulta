@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Container\Container as Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
@@ -30,7 +31,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->makeModel();
     }
 
-    // -> verificar retornos
     /**
      * Get searchable fields array
      *
@@ -85,8 +85,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param int|null $limit
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function allQuery($search = [], $skip = null, $limit = null)
-    {
+    public function allQuery(
+        array $search = [],
+        ?int $skip = null,
+        ?int $limit = null
+    ): Builder {
         $query = $this->model->newQuery();
 
         if (count($search)) {
@@ -119,8 +122,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|
      *  \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function all($search = [], $skip = null, $limit = null, $columns = ['*'])
-    {
+    public function all(
+        array $search = [],
+        ?int $skip = null,
+        ?int $limit = null,
+        array $columns = ['*']
+    ) {
         $query = $this->allQuery($search, $skip, $limit);
 
         return $query->get($columns);
@@ -133,7 +140,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return Model
      */
-    public function create($input): Model
+    public function create(array $input): Model
     {
         $model = $this->model->newInstance($input);
 
@@ -151,7 +158,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Builder|
      *  \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
      */
-    public function find($id, $columns = ['*'])
+    public function find(int $id, array $columns = ['*'])
     {
         $query = $this->model->newQuery();
 
@@ -167,7 +174,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Builder|
      * \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model
      */
-    public function update($input, $id)
+    public function update(array $input, int $id)
     {
         $query = $this->model->newQuery();
 
@@ -187,7 +194,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      *
      * @return bool|mixed|null
      */
-    public function delete($id)
+    public function delete(int $id): ?bool
     {
         $query = $this->model->newQuery();
 
@@ -200,7 +207,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param int $id
      * @return bool|mixed|null
      */
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): ?bool
     {
         $query = $this->model->newQuery();
 

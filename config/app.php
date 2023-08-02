@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\CidadeServiceProvider::class,
         App\Providers\MedicoServiceProvider::class,
+        App\Providers\UserServiceProvider::class,
     ])->toArray(),
 
     /*
