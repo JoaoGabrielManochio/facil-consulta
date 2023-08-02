@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CidadeController;
 use App\Http\Controllers\MedicoController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
 
 Route::get('/cidades', [CidadeController::class, 'list'])->name('cidades.list');
 
