@@ -21,7 +21,15 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
 Route::get('/user', [UserController::class, 'list'])->name('users.list');
 
-Route::get('/cidades', [CidadeController::class, 'list'])->name('cidades.list');
+Route::group(
+    ['prefix' => 'cidades'],
+    function () {
+        Route::get('', [CidadeController::class, 'list'])->name('cidades.list');
+        Route::get('/{cidade_id}/medicos', [
+            MedicoController::class, 'listDoctorByCidadeId'
+        ])->name('cidades.listDoctors');
+    }
+);
 
 Route::group(
     ['prefix' => 'medicos'],

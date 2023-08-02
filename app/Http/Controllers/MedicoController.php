@@ -73,4 +73,32 @@ class MedicoController extends Controller
             );
         }
     }
+
+    /**
+     * Return a list of doctors by cidade_id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function listDoctorByCidadeId($cidadeId): JsonResponse
+    {
+        // -> verificar catch
+        try {
+
+            $params = [
+                'cidade_id' => $cidadeId
+            ];
+
+            return response()->json(
+                $this->doctor->listDoctors($params)
+            );
+        } catch (Exception $e) {
+            return response()->json(
+                [
+                    $e->getMessage()
+                ],
+                400
+            );
+        }
+    }
 }

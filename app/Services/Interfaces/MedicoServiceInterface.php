@@ -11,6 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 interface MedicoServiceInterface
 {
-    public function listDoctors(): Collection;
+    public function listDoctors(array $params = []): Collection;
     public function storeDoctor(array $params): ?Medico;
 }

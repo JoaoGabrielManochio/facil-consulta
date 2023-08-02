@@ -28,11 +28,12 @@ class MedicoService implements MedicoServiceInterface
     /**
      * Return list of doctors
      *
+     * @param array $params
      * @return Collection
      */
-    public function listDoctors(): Collection
+    public function listDoctors(array $params = []): Collection
     {
-        return $this->doctorRepository->all();
+        return $this->doctorRepository->all($params);
     }
 
     /**
