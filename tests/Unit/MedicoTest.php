@@ -125,7 +125,7 @@ class MedicoTest extends TestCase
         $this->assertNull($response);
     }
 
-   /**
+    /**
      * Should not create a new doctor with nonexistent cidade_id
      */
     public function test_should_not_create_doctor_with_nonexistent_cidadeId(): void
@@ -143,5 +143,50 @@ class MedicoTest extends TestCase
         $response = $serviceDoctor->storeDoctor($input);
 
         $this->assertNull($response);
+    }
+
+    /**
+     * Should return a list of doctors by cidade_id.
+     */
+    public function test_should_return_doctor_by_cidade_id(): void
+    {
+        $city = Cidade::factory()->create();
+
+        $doctors = Medico::factory()->count(2)->create(
+            [
+                'cidade_id' => $city->id
+            ]
+        );
+
+        $serviceDoctor = app(MedicoServiceInterface::class);
+
+        $params = [
+            'cidade_id' => $city->id
+        ];
+
+        $response = $serviceDoctor->listDoctors($params);
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals($doctors[0]->id, $response[0]->id);
+        $this->assertInstanceOf(Collection::class, $response);
+    }
+
+    /**
+     * Should not return a list of doctors by cidade_id.
+     */
+    public function test_should_not_return_doctor_by_cidade_id(): void
+    {
+        Medico::factory()->count(2)->create();
+
+        $serviceDoctor = app(MedicoServiceInterface::class);
+
+        $params = [
+            'cidade_id' => 9999999999
+        ];
+
+        $response = $serviceDoctor->listDoctors($params);
+
+        $this->assertEmpty($response);
+        $this->assertInstanceOf(Collection::class, $response);
     }
 }

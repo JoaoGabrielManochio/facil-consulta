@@ -168,6 +168,40 @@ class MedicoTest extends TestCase
     }
 
     /**
+     * Should return a list of doctors by cidade_id
+     */
+    public function test_should_return_doctos_by_cidade_id(): void
+    {
+        $city = Cidade::factory()->create();
+
+        Medico::factory()->count(2)->create(
+            [
+                'cidade_id' => $city->id
+            ]
+        );
+
+        $response = $this->json('GET', route('cidades.listDoctors', $city->id));
+
+        $response->assertStatus(200);
+        $this->assertNotEmpty($response->getData());
+        $this->assertIsArray($response->getData());
+    }
+
+    /**
+     * Should not return a list of doctors by cidade_id
+     */
+    public function test_should_not_return_doctos_by_cidade_id(): void
+    {
+        $city = Cidade::factory()->create();
+
+        $response = $this->json('GET', route('cidades.listDoctors', $city->id));
+
+        $response->assertStatus(200);
+        $this->assertEmpty($response->getData());
+        $this->assertIsArray($response->getData());
+    }
+
+    /**
      * Get login token
      */
     private function getToken(): string
