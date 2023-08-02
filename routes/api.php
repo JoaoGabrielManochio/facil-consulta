@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
+Route::get('/user', [UserController::class, 'list'])->name('users.list');
 
 Route::get('/cidades', [CidadeController::class, 'list'])->name('cidades.list');
 
