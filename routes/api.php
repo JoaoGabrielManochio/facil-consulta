@@ -27,5 +27,6 @@ Route::group(
     ['prefix' => 'medicos'],
     function () {
         Route::get('', [MedicoController::class, 'list'])->name('medicos.list');
+        Route::middleware('auth:api')->post('', [MedicoController::class, 'store'])->name('medicos.store');
     }
 );

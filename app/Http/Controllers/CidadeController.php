@@ -27,6 +27,7 @@ class CidadeController extends Controller
      */
     public function list(): JsonResponse
     {
+        // -> verificar catch
         try {
             return response()->json(
                 $this->city->listCitys()

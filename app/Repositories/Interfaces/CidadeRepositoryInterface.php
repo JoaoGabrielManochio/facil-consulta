@@ -8,5 +8,4 @@ namespace App\Repositories\Interfaces;
  */
 interface CidadeRepositoryInterface extends BaseRepositoryInterface
 {
-
 }
