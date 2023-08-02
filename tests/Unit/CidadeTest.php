@@ -16,14 +16,14 @@ class CidadeTest extends TestCase
      */
     public function test_should_return_city(): void
     {
-        $cidades = Cidade::factory()->count(1)->create();
+        $citys = Cidade::factory()->count(1)->create();
 
         $serviceCity = app(CidadeServiceInterface::class);
 
         $response = $serviceCity->listCitys();
 
         $this->assertNotEmpty($response);
-        $this->assertEquals($cidades[0]->id, $response[0]->id);
+        $this->assertEquals($citys[0]->id, $response[0]->id);
     }
 
     /**
