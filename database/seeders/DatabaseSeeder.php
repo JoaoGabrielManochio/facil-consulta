@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         // -> verificar
         // $this->call(UsersSeeder::class);
         // $this->call(CidadesSeeder::class);
+        // $this->call(MedicosSeeder::class);
     }
 }
