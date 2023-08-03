@@ -13,4 +13,5 @@ interface MedicoServiceInterface
 {
     public function listDoctors(array $params = []): Collection;
     public function storeDoctor(array $params): ?Medico;
+    public function storePacientToDoctor(array $params);
 }

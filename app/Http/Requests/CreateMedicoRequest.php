@@ -49,7 +49,7 @@ class CreateMedicoRequest extends FormRequest
     /**
      * Validates if the informed city_id exists.
      *
-     * @return array
+     * @return void
      */
     private static function validateCidadeId($attribute, $value, $fail): void
     {
@@ -63,7 +63,7 @@ class CreateMedicoRequest extends FormRequest
     /**
      * Validates if there is a doctor with the same name and specialty.
      *
-     * @return array
+     * @return void
      */
     private static function validateNomeAndEspecialidade($attribute, $value, $fail): void
     {

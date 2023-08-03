@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateMedicoPacienteRequest;
 use App\Http\Requests\CreateMedicoRequest;
 use App\Services\Interfaces\MedicoServiceInterface;
 use Exception;
@@ -96,6 +97,35 @@ class MedicoController extends Controller
             return response()->json(
                 [
                     $e->getMessage()
+                ],
+                400
+            );
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|object
+     */
+    public function storePacientToDoctor(CreateMedicoPacienteRequest $request): JsonResponse
+    {
+        // -> verificar catch
+
+        $params = $request->only(
+            'paciente_id',
+            'medico_id'
+        );
+
+        try {
+            return response()->json(
+                $this->doctor->storePacientToDoctor($params),
+                201
+            );
+        } catch (Exception $e) {
+            return response()->json(
+                [
+                    'error' => $e->getMessage(),
+                    'success' => false
                 ],
                 400
             );

@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return view('welcome');
+})->name('login');
+
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
 Route::get('/user', [UserController::class, 'list'])->name('users.list');
@@ -25,9 +29,12 @@ Route::group(
     ['prefix' => 'cidades'],
     function () {
         Route::get('', [CidadeController::class, 'list'])->name('cidades.list');
-        Route::get('/{cidade_id}/medicos', [
-            MedicoController::class, 'listDoctorByCidadeId'
-        ])->name('cidades.listDoctors');
+        Route::get(
+            '/{cidade_id}/medicos',
+            [
+                MedicoController::class, 'listDoctorByCidadeId'
+            ]
+        )->name('cidades.listDoctorByCidadeId');
     }
 );
 
@@ -36,5 +43,11 @@ Route::group(
     function () {
         Route::get('', [MedicoController::class, 'list'])->name('medicos.list');
         Route::middleware('auth:api')->post('', [MedicoController::class, 'store'])->name('medicos.store');
+        Route::middleware('auth:api')->post(
+            '{medico_id}/pacientes',
+            [
+                MedicoController::class, 'storePacientToDoctor'
+            ]
+        )->name('medicos.storePacientToDoctor');
     }
 );
