@@ -171,6 +171,8 @@ return [
         App\Providers\CidadeServiceProvider::class,
         App\Providers\MedicoServiceProvider::class,
         App\Providers\UserServiceProvider::class,
+        App\Providers\PacienteServiceProvider::class,
+        App\Providers\MedicoPacienteServiceProvider::class,
     ])->toArray(),
 
     /*
