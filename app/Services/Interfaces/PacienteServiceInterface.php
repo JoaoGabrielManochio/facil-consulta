@@ -12,4 +12,5 @@ interface PacienteServiceInterface
 {
     public function listPatients(int $medicoId): array;
     public function storePatient(array $params): ?Paciente;
+    public function updatePatient(int $patientId, array $params): ?Paciente;
 }

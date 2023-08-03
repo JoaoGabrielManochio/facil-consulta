@@ -45,8 +45,8 @@ class PacienteService implements PacienteServiceInterface
         return $list;
     }
 
-     /**
-     * Create a new doctor
+    /**
+     * Create a new patient
      *
      * @param array $params
      * @return Paciente|null
@@ -60,32 +60,54 @@ class PacienteService implements PacienteServiceInterface
         return $this->patientRepository->create($params);
     }
 
-     /**
+    /**
      * Validate if the array has all the requeried index
      *
      * @param array $input
      * @return bool
      */
-    private function validatePatientInput(array $input): bool
+    private function validatePatientInput(array $input, bool $isUpdate = false): bool
     {
         $validate = true;
 
-        $cpfRule = new CpfRule();
-
-        $allQueryParams = [
-            'cpf' => $input['cpf'] ?? ''
-        ];
-
         if (
             empty($input['nome']) ||
-            empty($input['cpf']) ||
-            empty($input['celular']) ||
-            !$cpfRule->passes($input['cpf'], $input['cpf']) ||
-            $this->patientRepository->allQuery($allQueryParams)->count()
+            empty($input['celular'])
         ) {
             $validate = false;
         }
 
+        if (!$isUpdate) {
+            $cpfRule = new CpfRule();
+
+            $allQueryParams = [
+                'cpf' => $input['cpf'] ?? ''
+            ];
+
+            if (
+                empty($input['cpf']) ||
+                !$cpfRule->passes($input['cpf'], $input['cpf']) ||
+                $this->patientRepository->allQuery($allQueryParams)->count()
+            ) {
+                $validate = false;
+            }
+        }
+
         return $validate;
+    }
+
+    /**
+     * Update the patient
+     *
+     * @param array $params
+     * @return Paciente|null
+     */
+    public function updatePatient(int $patientId, array $params): ?Paciente
+    {
+        if (!self::validatePatientInput($params, true)) {
+            return null;
+        }
+
+        return $this->patientRepository->update($params, $patientId);
     }
 }

@@ -73,5 +73,6 @@ Route::group(
     ],
     function () {
         Route::post('', [PacienteController::class, 'store'])->name('pacientes.store');
+        Route::put('{id_paciente}', [PacienteController::class, 'update'])->name('pacientes.update');
     }
 );
