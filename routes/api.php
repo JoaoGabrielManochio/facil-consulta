@@ -54,13 +54,13 @@ Route::group(
 
                 Route::post(
                     '{id_medico}/pacientes',
-                    [MedicoController::class, 'storePacientToDoctor']
-                )->name('medicos.storePacientToDoctor');
+                    [MedicoController::class, 'storePatientToDoctor']
+                )->name('medicos.storePatientToDoctor');
 
                 Route::get(
                     '{id_medico}/pacientes',
                     [PacienteController::class, 'listPatientByMedicoId']
-                )->name('medicos.listPacientDoctor');
+                )->name('medicos.listPatientDoctor');
             }
         );
     }

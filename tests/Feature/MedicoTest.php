@@ -224,7 +224,7 @@ class MedicoTest extends TestCase
 
         $response = $this->json(
             'POST',
-            route('medicos.storePacientToDoctor', $doctor->id),
+            route('medicos.storePatientToDoctor', $doctor->id),
             $input,
             $headers
         );
@@ -257,7 +257,7 @@ class MedicoTest extends TestCase
 
         $response = $this->json(
             'POST',
-            route('medicos.storePacientToDoctor', $doctor->id),
+            route('medicos.storePatientToDoctor', $doctor->id),
             $input,
             $headers
         );
@@ -272,7 +272,7 @@ class MedicoTest extends TestCase
 
         $response = $this->json(
             'POST',
-            route('medicos.storePacientToDoctor', $doctor->id),
+            route('medicos.storePatientToDoctor', $doctor->id),
             $input,
             $headers
         );
@@ -304,7 +304,7 @@ class MedicoTest extends TestCase
 
         $response = $this->json(
             'POST',
-            route('medicos.storePacientToDoctor', $doctor->id),
+            route('medicos.storePatientToDoctor', $doctor->id),
             $input,
             $headers
         );
@@ -326,7 +326,7 @@ class MedicoTest extends TestCase
 
         $response = $this->json(
             'POST',
-            route('medicos.storePacientToDoctor', $doctor->id),
+            route('medicos.storePatientToDoctor', $doctor->id),
             $input,
             $headers
         );

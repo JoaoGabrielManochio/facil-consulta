@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Interfaces\LogErrorServiceInterface;
 use App\Services\Interfaces\UserServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -13,10 +14,14 @@ use Illuminate\Http\JsonResponse;
 class UserController extends Controller
 {
     private $user;
+    private $logError;
 
-    public function __construct(UserServiceInterface $userInterface)
-    {
+    public function __construct(
+        UserServiceInterface $userInterface,
+        LogErrorServiceInterface $logErrorInterface
+    ) {
         $this->user = $userInterface;
+        $this->logError = $logErrorInterface;
     }
 
     /**
@@ -27,15 +32,21 @@ class UserController extends Controller
      */
     public function list(): JsonResponse
     {
-        // -> verificar catch
         try {
             return response()->json(
                 $this->user->listUsers()
             );
         } catch (Exception $e) {
+            $params = [
+                'route' => 'users.list',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    $e->getMessage()
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );

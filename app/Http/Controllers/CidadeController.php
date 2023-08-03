@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Interfaces\CidadeServiceInterface;
+use App\Services\Interfaces\LogErrorServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
@@ -13,10 +14,14 @@ use Illuminate\Http\JsonResponse;
 class CidadeController extends Controller
 {
     private $city;
+    private $logError;
 
-    public function __construct(CidadeServiceInterface $cityInterface)
-    {
+    public function __construct(
+        CidadeServiceInterface $cityInterface,
+        LogErrorServiceInterface $logErrorInterface
+    ) {
         $this->city = $cityInterface;
+        $this->logError = $logErrorInterface;
     }
 
     /**
@@ -27,15 +32,22 @@ class CidadeController extends Controller
      */
     public function list(): JsonResponse
     {
-        // -> verificar catch
         try {
             return response()->json(
                 $this->city->listCitys()
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'cidades.list',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    $e->getMessage()
+                   'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );

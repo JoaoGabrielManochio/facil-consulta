@@ -34,7 +34,7 @@ class PacienteTest extends TestCase
             'Authorization' => 'Bearer ' . $token
         ];
 
-        $response = $this->json('GET', route('medicos.listPacientDoctor', $doctor->id), [], $headers);
+        $response = $this->json('GET', route('medicos.listPatientDoctor', $doctor->id), [], $headers);
 
         $response->assertStatus(200);
         $this->assertNotEmpty($response->getData());
@@ -55,7 +55,7 @@ class PacienteTest extends TestCase
             'Authorization' => 'Bearer ' . $token
         ];
 
-        $response = $this->json('GET', route('medicos.listPacientDoctor', $doctor->id), [], $headers);
+        $response = $this->json('GET', route('medicos.listPatientDoctor', $doctor->id), [], $headers);
 
         $response->assertStatus(200);
         $this->assertEmpty($response->getData());

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMedicoPacienteRequest;
 use App\Http\Requests\CreateMedicoRequest;
+use App\Services\Interfaces\LogErrorServiceInterface;
 use App\Services\Interfaces\MedicoServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -15,10 +16,14 @@ use Illuminate\Http\JsonResponse;
 class MedicoController extends Controller
 {
     private $doctor;
+    private $logError;
 
-    public function __construct(MedicoServiceInterface $doctorInterface)
-    {
+    public function __construct(
+        MedicoServiceInterface $doctorInterface,
+        LogErrorServiceInterface $logErrorInterface
+    ) {
         $this->doctor = $doctorInterface;
+        $this->logError = $logErrorInterface;
     }
 
     /**
@@ -29,16 +34,21 @@ class MedicoController extends Controller
      */
     public function list(): JsonResponse
     {
-        // -> verificar catch
-
         try {
             return response()->json(
                 $this->doctor->listDoctors()
             );
         } catch (Exception $e) {
+            $params = [
+                'route' => 'medicos.list',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    $e->getMessage()
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
@@ -51,8 +61,6 @@ class MedicoController extends Controller
      */
     public function store(CreateMedicoRequest $request): JsonResponse
     {
-        // -> verificar catch
-
         $params = $request->only(
             'nome',
             'especialidade',
@@ -65,10 +73,17 @@ class MedicoController extends Controller
                 201
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'medicos.store',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    'error' => $e->getMessage(),
-                    'success' => false
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
@@ -83,7 +98,6 @@ class MedicoController extends Controller
      */
     public function listDoctorByCidadeId($cidadeId): JsonResponse
     {
-        // -> verificar catch
         try {
 
             $params = [
@@ -94,9 +108,17 @@ class MedicoController extends Controller
                 $this->doctor->listDoctors($params)
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'cidades.listDoctorByCidadeId',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    $e->getMessage()
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
@@ -109,8 +131,6 @@ class MedicoController extends Controller
      */
     public function storePatientToDoctor(CreateMedicoPacienteRequest $request): JsonResponse
     {
-        // -> verificar catch
-
         $params = $request->only(
             'paciente_id',
             'medico_id'
@@ -122,10 +142,17 @@ class MedicoController extends Controller
                 201
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'medicos.storePatientToDoctor',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    'error' => $e->getMessage(),
-                    'success' => false
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePacienteRequest;
 use App\Http\Requests\UpdatePacienteRequest;
+use App\Services\Interfaces\LogErrorServiceInterface;
 use App\Services\Interfaces\PacienteServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -15,13 +16,17 @@ use Illuminate\Http\JsonResponse;
 class PacienteController extends Controller
 {
     private $patient;
+    private $logError;
 
-    public function __construct(PacienteServiceInterface $patientInterface)
-    {
+    public function __construct(
+        PacienteServiceInterface $patientInterface,
+        LogErrorServiceInterface $logErrorInterface
+    ) {
         $this->patient = $patientInterface;
+        $this->logError = $logErrorInterface;
     }
 
-     /**
+    /**
      * Return a list of doctors by medico_id
      *
      * @return \Illuminate\Http\JsonResponse
@@ -29,15 +34,22 @@ class PacienteController extends Controller
      */
     public function listPatientByMedicoId($medicoId): JsonResponse
     {
-        // -> verificar catch
         try {
             return response()->json(
                 $this->patient->listPatients($medicoId)
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'medicos.listPatientDoctor',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    $e->getMessage()
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
@@ -50,8 +62,6 @@ class PacienteController extends Controller
      */
     public function store(CreatePacienteRequest $request): JsonResponse
     {
-        // -> verificar catch
-
         $params = $request->only(
             'nome',
             'cpf',
@@ -64,10 +74,17 @@ class PacienteController extends Controller
                 201
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'pacientes.store',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    'error' => $e->getMessage(),
-                    'success' => false
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
@@ -80,8 +97,6 @@ class PacienteController extends Controller
      */
     public function update(UpdatePacienteRequest $request, int $patientId): JsonResponse
     {
-        // -> verificar catch
-
         $params = $request->only(
             'nome',
             'celular'
@@ -93,10 +108,17 @@ class PacienteController extends Controller
                 200
             );
         } catch (Exception $e) {
+
+            $params = [
+                'route' => 'pacientes.update',
+                'error' => $e
+            ];
+
+            $this->logError->storeLog($params);
+
             return response()->json(
                 [
-                    'error' => $e->getMessage(),
-                    'success' => false
+                    'Algo inesperado ocorreu, tente novamente ou entre em contato via e-mail'
                 ],
                 400
             );
