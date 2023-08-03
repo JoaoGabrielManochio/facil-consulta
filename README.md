@@ -12,4 +12,12 @@ Para subir o projeto, realizar as seguintes etapas:
     
         - docker-compose exec facil.consulta composer install
 
+    - rodar as migrations:
+    
+        - docker-compose exec facil.consulta php artisan migrate
+
+    - rodar as seeders:
+    
+        - docker-compose exec facil.consulta php artisan db:seed
+
 Para acessar o projeto, utilizar a seguinte url -> http://localhost:8083
