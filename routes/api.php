@@ -30,8 +30,9 @@ Route::group(
     ['prefix' => 'cidades'],
     function () {
         Route::get('', [CidadeController::class, 'list'])->name('cidades.list');
+
         Route::get(
-            '/{cidade_id}/medicos',
+            '/{id_cidade}/medicos',
             [
                 MedicoController::class, 'listDoctorByCidadeId'
             ]
@@ -43,18 +44,34 @@ Route::group(
     ['prefix' => 'medicos'],
     function () {
         Route::get('', [MedicoController::class, 'list'])->name('medicos.list');
-        Route::middleware('auth:api')->post('', [MedicoController::class, 'store'])->name('medicos.store');
-        Route::middleware('auth:api')->post(
-            '{medico_id}/pacientes',
+
+        Route::group(
             [
-                MedicoController::class, 'storePacientToDoctor'
-            ]
-        )->name('medicos.storePacientToDoctor');
-        Route::middleware('auth:api')->get(
-            '{medico_id}/pacientes',
-            [
-                PacienteController::class, 'listPacientByMedicoId'
-            ]
-        )->name('medicos.listPacientDoctor');
+                'middleware' => ['auth:api']
+            ],
+            function () {
+                Route::post('', [MedicoController::class, 'store'])->name('medicos.store');
+
+                Route::post(
+                    '{id_medico}/pacientes',
+                    [MedicoController::class, 'storePacientToDoctor']
+                )->name('medicos.storePacientToDoctor');
+
+                Route::get(
+                    '{id_medico}/pacientes',
+                    [PacienteController::class, 'listPatientByMedicoId']
+                )->name('medicos.listPacientDoctor');
+            }
+        );
+    }
+);
+
+Route::group(
+    [
+        'prefix' => 'pacientes',
+        'middleware' => ['auth:api']
+    ],
+    function () {
+        Route::post('', [PacienteController::class, 'store'])->name('pacientes.store');
     }
 );

@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Paciente;
 use App\Repositories\Interfaces\MedicoRepositoryInterface;
 use App\Repositories\Interfaces\PacienteRepositoryInterface;
+use App\Rules\CpfRule;
 use App\Services\Interfaces\PacienteServiceInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -41,5 +43,49 @@ class PacienteService implements PacienteServiceInterface
         }
 
         return $list;
+    }
+
+     /**
+     * Create a new doctor
+     *
+     * @param array $params
+     * @return Paciente|null
+     */
+    public function storePatient(array $params): ?Paciente
+    {
+        if (!self::validatePatientInput($params)) {
+            return null;
+        }
+
+        return $this->patientRepository->create($params);
+    }
+
+     /**
+     * Validate if the array has all the requeried index
+     *
+     * @param array $input
+     * @return bool
+     */
+    private function validatePatientInput(array $input): bool
+    {
+        $validate = true;
+
+        $cpfRule = new CpfRule();
+
+        $allQueryParams = [
+            'cpf' => $input['cpf'] ?? ''
+        ];
+
+        if (
+            empty($input['nome']) ||
+            empty($input['cpf']) ||
+            empty($input['celular']) ||
+            !$cpfRule->passes($input['cpf'], $input['cpf']) ||
+            $this->patientRepository->allQuery($allQueryParams)->count()
+        ) {
+            $validate = false;
+        }
+
+        return $validate;
     }
 }

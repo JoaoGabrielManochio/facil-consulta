@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePacienteRequest;
 use App\Services\Interfaces\PacienteServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,36 @@ class PacienteController extends Controller
             return response()->json(
                 [
                     $e->getMessage()
+                ],
+                400
+            );
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|object
+     */
+    public function store(CreatePacienteRequest $request): JsonResponse
+    {
+        // -> verificar catch
+
+        $params = $request->only(
+            'nome',
+            'cpf',
+            'celular'
+        );
+
+        try {
+            return response()->json(
+                $this->patient->storePatient($params),
+                201
+            );
+        } catch (Exception $e) {
+            return response()->json(
+                [
+                    'error' => $e->getMessage(),
+                    'success' => false
                 ],
                 400
             );
