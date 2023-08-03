@@ -26,7 +26,7 @@ class Paciente extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function medicos()
+    public function medicosPacientes()
     {
         return $this->hasMany(MedicoPaciente::class, 'paciente_id');
     }

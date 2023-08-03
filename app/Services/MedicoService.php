@@ -18,19 +18,19 @@ class MedicoService implements MedicoServiceInterface
 {
     private $doctorRepository;
     private $cityRepository;
-    private $doctorPacientRepository;
-    private $pacientRepository;
+    private $doctorPatientRepository;
+    private $patientRepository;
 
     public function __construct(
         MedicoRepositoryInterface $doctorRepository,
         CidadeRepositoryInterface $cityRepository,
-        MedicoPacienteRepositoryInterface $doctorPacientRepository,
-        PacienteRepositoryInterface $pacientRepository
+        MedicoPacienteRepositoryInterface $doctorPatientRepository,
+        PacienteRepositoryInterface $patientRepository
     ) {
         $this->doctorRepository = $doctorRepository;
         $this->cityRepository = $cityRepository;
-        $this->doctorPacientRepository = $doctorPacientRepository;
-        $this->pacientRepository = $pacientRepository;
+        $this->doctorPatientRepository = $doctorPatientRepository;
+        $this->patientRepository = $patientRepository;
     }
 
     /**
@@ -88,21 +88,21 @@ class MedicoService implements MedicoServiceInterface
     }
 
     /**
-     * Store a new pacient to a doctor
+     * Store a new patient to a doctor
      *
      * @param array $params
      */
-    public function storePacientToDoctor(array $params)
+    public function storePatientToDoctor(array $params)
     {
-        if (!self::validatePacientDoctorInput($params)) {
+        if (!self::validatePatientDoctorInput($params)) {
             return null;
         }
 
-        $doctorPacient = $this->doctorPacientRepository->create($params);
+        $doctorPatient = $this->doctorPatientRepository->create($params);
 
         return [
-            'medico' => $doctorPacient->medicos()->first(),
-            'paciente' => $doctorPacient->pacientes()->first()
+            'medico' => $doctorPatient->medicos()->first(),
+            'paciente' => $doctorPatient->pacientes()->first()
         ];
     }
 
@@ -112,15 +112,21 @@ class MedicoService implements MedicoServiceInterface
      * @param array $input
      * @return bool
      */
-    private function validatePacientDoctorInput(array $input): bool
+    private function validatePatientDoctorInput(array $input): bool
     {
         $validate = true;
+
+        $allQueryParams = [
+            'medico_id' => $input['medico_id'] ?? '',
+            'paciente_id' => $input['paciente_id'] ?? ''
+        ];
 
         if (
             empty($input['medico_id']) ||
             empty($input['paciente_id']) ||
             !$this->doctorRepository->find($input['medico_id']) ||
-            !$this->pacientRepository->find($input['paciente_id'])
+            !$this->patientRepository->find($input['paciente_id']) ||
+            $this->doctorPatientRepository->allQuery($allQueryParams)->count()
         ) {
             $validate = false;
         }

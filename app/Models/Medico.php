@@ -24,10 +24,18 @@ class Medico extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function cidades()
     {
         return $this->belongsTo(Cidade::class, 'cidade_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function medicosPacientes()
+    {
+        return $this->hasMany(MedicoPaciente::class, 'medico_id');
     }
 }

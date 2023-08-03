@@ -22,18 +22,18 @@ class MedicoPaciente extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function medicos()
     {
-        return $this->hasMany(Medico::class, 'id', 'medico_id');
+        return $this->belongsTo(Medico::class, 'medico_id', 'id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function pacientes()
     {
-        return $this->hasMany(Paciente::class, 'id', 'paciente_id');
+        return $this->belongsTo(Paciente::class, 'paciente_id', 'id');
     }
 }
