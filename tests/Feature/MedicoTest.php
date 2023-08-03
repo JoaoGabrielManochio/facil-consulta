@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Cidade;
 use App\Models\Medico;
+use App\Models\Paciente;
 use App\Models\User;
 use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -180,7 +181,7 @@ class MedicoTest extends TestCase
             ]
         );
 
-        $response = $this->json('GET', route('cidades.listDoctors', $city->id));
+        $response = $this->json('GET', route('cidades.listDoctorByCidadeId', $city->id));
 
         $response->assertStatus(200);
         $this->assertNotEmpty($response->getData());
@@ -194,11 +195,144 @@ class MedicoTest extends TestCase
     {
         $city = Cidade::factory()->create();
 
-        $response = $this->json('GET', route('cidades.listDoctors', $city->id));
+        $response = $this->json('GET', route('cidades.listDoctorByCidadeId', $city->id));
 
         $response->assertStatus(200);
         $this->assertEmpty($response->getData());
         $this->assertIsArray($response->getData());
+    }
+
+    /**
+     * Should store a new pacient to a doctor
+     */
+    public function test_should_create_doctor_pacient(): void
+    {
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        $input = [
+            'paciente_id' => $pacient->id,
+            'medico_id' => $doctor->id
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'POST',
+            route('medicos.storePacientToDoctor', $doctor->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(201);
+        $this->assertNotEmpty($response->getData());
+        $this->assertEquals($input['medico_id'], $response['medico']['id']);
+        $this->assertEquals($input['paciente_id'], $response['paciente']['id']);
+    }
+
+    /**
+     * Should not create a new pacient to a doctor with missing fields
+     */
+    public function test_should_not_create_doctor_pacient_with_missing_fields(): void
+    {
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        // Missing paciente_id
+        $input = [
+            'medico_id' => $doctor->id
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'POST',
+            route('medicos.storePacientToDoctor', $doctor->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('The paciente id field is required.', $response['message']);
+
+        // Missing medico_id
+        $input = [
+            'paciente_id' => $pacient->id
+        ];
+
+        $response = $this->json(
+            'POST',
+            route('medicos.storePacientToDoctor', $doctor->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('The medico id field is required.', $response['message']);
+    }
+
+    /**
+     * Should not create a new doctor pacient with nonexistent pacient or doctor
+     */
+    public function test_should_not_create_doctor_pacient_with_nonexistent_pacient_or_doctor(): void
+    {
+
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        $input = [
+            'paciente_id' => 9999999,
+            'medico_id' => $doctor->id
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'POST',
+            route('medicos.storePacientToDoctor', $doctor->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('Paciente ID informado não existente!', $response['message']);
+
+        $input = [
+            'paciente_id' => $pacient->id,
+            'medico_id' => 999999999999
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'POST',
+            route('medicos.storePacientToDoctor', $doctor->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('Médico ID informado não existente!', $response['message']);
     }
 
     /**

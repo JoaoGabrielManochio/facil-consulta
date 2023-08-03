@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Cidade;
 use App\Models\Medico;
+use App\Models\Paciente;
 use App\Services\Interfaces\MedicoServiceInterface;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Collection;
@@ -188,5 +189,85 @@ class MedicoTest extends TestCase
 
         $this->assertEmpty($response);
         $this->assertInstanceOf(Collection::class, $response);
+    }
+
+    /**
+     * Should store a new pacient to a doctor.
+     */
+    public function test_should_create_doctor_pacient(): void
+    {
+        $serviceDoctor = app(MedicoServiceInterface::class);
+
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        $input = [
+            'paciente_id' => $pacient->id,
+            'medico_id' => $doctor->id
+        ];
+
+        $response = $serviceDoctor->storePacientToDoctor($input);
+
+        $this->assertNotNull($response);
+        $this->assertEquals($input['medico_id'], $response['medico']->id);
+        $this->assertEquals($input['paciente_id'], $response['paciente']->id);
+    }
+
+    /**
+     * Should not create a new pacient to a doctor with missing fields.
+     */
+    public function test_should_not_create_doctor_pacient_with_missing_fields(): void
+    {
+        $serviceDoctor = app(MedicoServiceInterface::class);
+
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        // Missing paciente_id
+        $input = [
+            'medico_id' => $doctor->id
+        ];
+
+        $response = $serviceDoctor->storePacientToDoctor($input);
+
+        $this->assertNull($response);
+
+        // Missing medico_id
+        $input = [
+            'paciente_id' => $pacient->id
+        ];
+
+        $response = $serviceDoctor->storePacientToDoctor($input);
+
+        $this->assertNull($response);
+    }
+
+    /**
+     * Should not create a new doctor pacient with nonexistent pacient or doctor
+     */
+    public function test_should_not_create_doctor_pacient_with_nonexistent_pacient_or_doctor(): void
+    {
+        $serviceDoctor = app(MedicoServiceInterface::class);
+
+        $doctor = Medico::factory()->create();
+        $pacient = Paciente::factory()->create();
+
+        $input = [
+            'paciente_id' => 9999999,
+            'medico_id' => $doctor->id
+        ];
+
+        $response = $serviceDoctor->storePacientToDoctor($input);
+
+        $this->assertNull($response);
+
+        $input = [
+            'paciente_id' => $pacient->id,
+            'medico_id' => 99999999
+        ];
+
+        $response = $serviceDoctor->storePacientToDoctor($input);
+
+        $this->assertNull($response);
     }
 }
