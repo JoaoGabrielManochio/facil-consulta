@@ -223,6 +223,86 @@ class PacienteTest extends TestCase
     }
 
     /**
+     * Should update a new patient
+     */
+    public function test_should_update_patient(): void
+    {
+        $patient = Paciente::factory()->create();
+
+        $faker = app(Generator::class);
+
+        $input = [
+            'nome' => $faker->name,
+            'celular' => $faker->cellphone
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'PUT',
+            route('pacientes.update', $patient->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(200);
+        $this->assertNotEmpty($response->getData());
+        $this->assertEquals($input['nome'], $response['nome']);
+    }
+
+    /**
+     * Should not update patient with missing fields
+     */
+    public function test_should_not_update_patient_with_missing_fields(): void
+    {
+        $patient = Paciente::factory()->create();
+
+        $faker = app(Generator::class);
+
+        // Missing nome
+        $input = [
+            'celular' => $faker->cellphone
+        ];
+
+        $token = self::getToken();
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        $response = $this->json(
+            'PUT',
+            route('pacientes.update', $patient->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('The nome field is required.', $response['message']);
+
+        // Missing celular
+        $input = [
+            'nome' => $faker->name,
+            'cpf' => $faker->cpf,
+        ];
+        $response = $this->json(
+            'PUT',
+            route('pacientes.update', $patient->id),
+            $input,
+            $headers
+        );
+
+        $response->assertStatus(422);
+        $this->assertEquals('The celular field is required.', $response['message']);
+    }
+
+    /**
      * Get login token
      */
     private function getToken(): string

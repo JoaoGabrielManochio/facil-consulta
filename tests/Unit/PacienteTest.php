@@ -153,4 +153,57 @@ class PacienteTest extends TestCase
 
         $this->assertNull($response);
     }
+
+    /**
+     * Should update patient.
+     */
+    public function test_should_update_patient(): void
+    {
+        $patient = Paciente::factory()->create();
+
+        $service = app(PacienteServiceInterface::class);
+
+        $faker = app(Generator::class);
+
+        $input = [
+            'nome' => $faker->name,
+            'celular' => $faker->cellphone
+        ];
+
+        $response = $service->updatePatient($patient->id, $input);
+
+        $this->assertNotNull($response);
+        $this->assertEquals($input['nome'], $response->nome);
+        $this->assertInstanceOf(Paciente::class, $response);
+    }
+
+     /**
+     * Should not update patient with missing fields.
+     */
+    public function test_should_not_update_patient_with_missing_fields(): void
+    {
+        $patient = Paciente::factory()->create();
+
+        $service = app(PacienteServiceInterface::class);
+
+        $faker = app(Generator::class);
+
+        // missing nome
+        $input = [
+            'celular' => $faker->cellphone
+        ];
+
+        $response = $service->updatePatient($patient->id, $input);
+
+        $this->assertNull($response);
+
+        // missing celular
+        $input = [
+            'nome' => $faker->name,
+        ];
+
+        $response = $service->updatePatient($patient->id, $input);
+
+        $this->assertNull($response);
+    }
 }
