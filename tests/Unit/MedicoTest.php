@@ -192,21 +192,21 @@ class MedicoTest extends TestCase
     }
 
     /**
-     * Should store a new pacient to a doctor.
+     * Should store a new patient to a doctor.
      */
-    public function test_should_create_doctor_pacient(): void
+    public function test_should_create_doctor_patient(): void
     {
         $serviceDoctor = app(MedicoServiceInterface::class);
 
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         $input = [
-            'paciente_id' => $pacient->id,
+            'paciente_id' => $patient->id,
             'medico_id' => $doctor->id
         ];
 
-        $response = $serviceDoctor->storePacientToDoctor($input);
+        $response = $serviceDoctor->storePatientToDoctor($input);
 
         $this->assertNotNull($response);
         $this->assertEquals($input['medico_id'], $response['medico']->id);
@@ -214,59 +214,59 @@ class MedicoTest extends TestCase
     }
 
     /**
-     * Should not create a new pacient to a doctor with missing fields.
+     * Should not create a new patient to a doctor with missing fields.
      */
-    public function test_should_not_create_doctor_pacient_with_missing_fields(): void
+    public function test_should_not_create_doctor_patient_with_missing_fields(): void
     {
         $serviceDoctor = app(MedicoServiceInterface::class);
 
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         // Missing paciente_id
         $input = [
             'medico_id' => $doctor->id
         ];
 
-        $response = $serviceDoctor->storePacientToDoctor($input);
+        $response = $serviceDoctor->storePatientToDoctor($input);
 
         $this->assertNull($response);
 
         // Missing medico_id
         $input = [
-            'paciente_id' => $pacient->id
+            'paciente_id' => $patient->id
         ];
 
-        $response = $serviceDoctor->storePacientToDoctor($input);
+        $response = $serviceDoctor->storePatientToDoctor($input);
 
         $this->assertNull($response);
     }
 
     /**
-     * Should not create a new doctor pacient with nonexistent pacient or doctor
+     * Should not create a new doctor patient with nonexistent patient or doctor
      */
-    public function test_should_not_create_doctor_pacient_with_nonexistent_pacient_or_doctor(): void
+    public function test_should_not_create_doctor_patient_with_nonexistent_patient_or_doctor(): void
     {
         $serviceDoctor = app(MedicoServiceInterface::class);
 
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         $input = [
             'paciente_id' => 9999999,
             'medico_id' => $doctor->id
         ];
 
-        $response = $serviceDoctor->storePacientToDoctor($input);
+        $response = $serviceDoctor->storePatientToDoctor($input);
 
         $this->assertNull($response);
 
         $input = [
-            'paciente_id' => $pacient->id,
+            'paciente_id' => $patient->id,
             'medico_id' => 99999999
         ];
 
-        $response = $serviceDoctor->storePacientToDoctor($input);
+        $response = $serviceDoctor->storePatientToDoctor($input);
 
         $this->assertNull($response);
     }

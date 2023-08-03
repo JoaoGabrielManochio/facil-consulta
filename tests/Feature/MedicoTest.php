@@ -203,15 +203,15 @@ class MedicoTest extends TestCase
     }
 
     /**
-     * Should store a new pacient to a doctor
+     * Should store a new patient to a doctor
      */
-    public function test_should_create_doctor_pacient(): void
+    public function test_should_create_doctor_patient(): void
     {
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         $input = [
-            'paciente_id' => $pacient->id,
+            'paciente_id' => $patient->id,
             'medico_id' => $doctor->id
         ];
 
@@ -236,12 +236,12 @@ class MedicoTest extends TestCase
     }
 
     /**
-     * Should not create a new pacient to a doctor with missing fields
+     * Should not create a new patient to a doctor with missing fields
      */
-    public function test_should_not_create_doctor_pacient_with_missing_fields(): void
+    public function test_should_not_create_doctor_patient_with_missing_fields(): void
     {
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         // Missing paciente_id
         $input = [
@@ -267,7 +267,7 @@ class MedicoTest extends TestCase
 
         // Missing medico_id
         $input = [
-            'paciente_id' => $pacient->id
+            'paciente_id' => $patient->id
         ];
 
         $response = $this->json(
@@ -282,13 +282,13 @@ class MedicoTest extends TestCase
     }
 
     /**
-     * Should not create a new doctor pacient with nonexistent pacient or doctor
+     * Should not create a new doctor patient with nonexistent patient or doctor
      */
-    public function test_should_not_create_doctor_pacient_with_nonexistent_pacient_or_doctor(): void
+    public function test_should_not_create_doctor_patient_with_nonexistent_patient_or_doctor(): void
     {
 
         $doctor = Medico::factory()->create();
-        $pacient = Paciente::factory()->create();
+        $patient = Paciente::factory()->create();
 
         $input = [
             'paciente_id' => 9999999,
@@ -313,7 +313,7 @@ class MedicoTest extends TestCase
         $this->assertEquals('Paciente ID informado não existente!', $response['message']);
 
         $input = [
-            'paciente_id' => $pacient->id,
+            'paciente_id' => $patient->id,
             'medico_id' => 999999999999
         ];
 
