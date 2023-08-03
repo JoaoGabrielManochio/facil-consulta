@@ -173,6 +173,7 @@ return [
         App\Providers\UserServiceProvider::class,
         App\Providers\PacienteServiceProvider::class,
         App\Providers\MedicoPacienteServiceProvider::class,
+        App\Providers\LogErrorServiceProvider::class,
     ])->toArray(),
 
     /*
