@@ -107,7 +107,7 @@ class MedicoController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|object
      */
-    public function storePacientToDoctor(CreateMedicoPacienteRequest $request): JsonResponse
+    public function storePatientToDoctor(CreateMedicoPacienteRequest $request): JsonResponse
     {
         // -> verificar catch
 
@@ -118,7 +118,7 @@ class MedicoController extends Controller
 
         try {
             return response()->json(
-                $this->doctor->storePacientToDoctor($params),
+                $this->doctor->storePatientToDoctor($params),
                 201
             );
         } catch (Exception $e) {

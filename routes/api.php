@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CidadeController;
 use App\Http\Controllers\MedicoController;
+use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,5 +50,11 @@ Route::group(
                 MedicoController::class, 'storePacientToDoctor'
             ]
         )->name('medicos.storePacientToDoctor');
+        Route::middleware('auth:api')->get(
+            '{medico_id}/pacientes',
+            [
+                PacienteController::class, 'listPacientByMedicoId'
+            ]
+        )->name('medicos.listPacientDoctor');
     }
 );
